@@ -165,7 +165,7 @@ def oauth_callback(request, platform):
         platform=platform,
         defaults={
             'account_name': f"{platform.capitalize()} Official",
-            'account_handle': f"@{platform}_official",
+            'username': f"@{platform}_official",
             'is_connected': True,
             'health': 'healthy',
             'followers_count': 15400,
