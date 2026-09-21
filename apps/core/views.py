@@ -177,3 +177,39 @@ def oauth_callback(request, platform):
     frontend_url = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
     return redirect(f"{frontend_url}/channels?connected={platform}")
 
+
+import json
+from django.conf import settings
+from django.http import HttpResponse, JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def instagram_webhook(request):
+    """
+    Instagram & Meta Webhook handler.
+    Handles GET subscription verification (hub.challenge) and POST real-time event notifications.
+    """
+    if request.method == "GET":
+        mode = request.GET.get("hub.mode")
+        token = request.GET.get("hub.verify_token")
+        challenge = request.GET.get("hub.challenge")
+
+        verify_token = getattr(settings, 'INSTAGRAM_WEBHOOK_VERIFY_TOKEN', 'andhrayatri_instagram_webhook_2026')
+
+        if mode == "subscribe" and token == verify_token:
+            return HttpResponse(challenge, status=200, content_type="text/plain")
+
+        return HttpResponse("Forbidden - Invalid Verify Token", status=403)
+
+    if request.method == "POST":
+        try:
+            payload = json.loads(request.body.decode('utf-8') or "{}")
+        except Exception:
+            payload = {}
+
+        print("Received Instagram Webhook Event:", payload)
+        return JsonResponse({"status": "ok"}, status=200)
+
+    return HttpResponse("Method Not Allowed", status=405)
+
+

@@ -7,6 +7,7 @@ from .views import (
     MediaAssetViewSet,
     get_oauth_authorize_url,
     oauth_callback,
+    instagram_webhook,
     health_check
 )
 
@@ -20,6 +21,8 @@ urlpatterns = [
     path('health/', health_check, name='health-check'),
     path('oauth/authorize/<str:platform>/', get_oauth_authorize_url, name='oauth-authorize-url'),
     path('oauth/callback/<str:platform>/', oauth_callback, name='oauth-callback'),
+    path('webhooks/instagram/', instagram_webhook, name='instagram-webhook'),
     path('', include(router.urls)),
 ]
+
 

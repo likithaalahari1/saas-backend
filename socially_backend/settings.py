@@ -13,6 +13,9 @@ DEBUG = os.environ.get('DEBUG', 'True').lower() == 'true'
 
 ALLOWED_HOSTS = ['*']
 
+INSTAGRAM_WEBHOOK_VERIFY_TOKEN = os.environ.get('INSTAGRAM_WEBHOOK_VERIFY_TOKEN', 'andhrayatri_instagram_webhook_2026')
+
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
