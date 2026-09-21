@@ -5,7 +5,7 @@ def get_platform_authorize_url(platform: str, client_id: str, redirect_uri: str)
     """Generates authentic OAuth authorization URLs for all 7 social networks."""
     
     if platform in ['instagram', 'facebook']:
-        if not client_id or client_id.startswith('mock_') or client_id.startswith('meta_app_id'):
+        if not client_id or not client_id.isdigit():
             client_id = '1767475414295181'
 
         params = {
@@ -15,6 +15,7 @@ def get_platform_authorize_url(platform: str, client_id: str, redirect_uri: str)
             'scope': 'instagram_basic,instagram_content_publish,pages_show_list,pages_manage_posts',
         }
         return f"https://www.facebook.com/v18.0/dialog/oauth?{urlencode(params)}"
+
 
 
     elif platform == 'youtube':

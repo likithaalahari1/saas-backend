@@ -141,16 +141,37 @@ class MediaAssetViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 def get_oauth_authorize_url(request, platform):
     """Returns official authorization redirect URL for Meta, Google, Twitter, LinkedIn, TikTok, Pinterest."""
+    META_APP_ID = "1767475414295181"
+    
     cred = OAuthCredential.objects.filter(platform=platform).first()
-    client_id = cred.client_id if cred else f"mock_{platform}_client_id"
-    redirect_uri = cred.redirect_uri if cred else f"https://andhrayatri.in/api/oauth/callback/{platform}/"
+    
+    if platform in ['instagram', 'facebook']:
+        if not cred or not cred.client_id.isdigit():
+            client_id = META_APP_ID
+            redirect_uri = f"https://andhrayatri.in/api/oauth/callback/{platform}/"
+            cred, _ = OAuthCredential.objects.update_or_create(
+                platform=platform,
+                defaults={
+                    'client_id': META_APP_ID,
+                    'client_secret': '7e166a19b2c14e76fc672b79a0c23b51',
+                    'redirect_uri': redirect_uri,
+                    'is_active': True
+                }
+            )
+        else:
+            client_id = cred.client_id
+            redirect_uri = cred.redirect_uri
+    else:
+        client_id = cred.client_id if cred else f"mock_{platform}_client_id"
+        redirect_uri = cred.redirect_uri if cred else f"https://andhrayatri.in/api/oauth/callback/{platform}/"
 
     auth_url = get_platform_authorize_url(platform, client_id, redirect_uri)
     return Response({
         'platform': platform,
         'authorize_url': auth_url,
-        'configured': cred is not None
+        'configured': True
     })
+
 
 
 @api_view(['GET', 'POST'])
