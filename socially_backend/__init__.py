@@ -1,1 +1,3 @@
-# socially_backend module
+import pymysql
+
+pymysql.install_as_MySQLdb()
