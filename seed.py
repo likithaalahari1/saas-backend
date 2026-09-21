@@ -8,14 +8,15 @@ from apps.core.models import OAuthCredential, SocialAccount, Post, MediaAsset
 
 # Seed OAuth Developer Credentials for Meta, Google, LinkedIn, Twitter, TikTok, Pinterest
 platforms = [
-    ('instagram', 'meta_app_id_948201', 'meta_app_secret_8492048', 'http://127.0.0.1:8000/api/oauth/callback/instagram/'),
-    ('facebook', 'meta_app_id_948201', 'meta_app_secret_8492048', 'http://127.0.0.1:8000/api/oauth/callback/facebook/'),
-    ('youtube', 'google_client_id_48201.apps.googleusercontent.com', 'google_client_secret_94820', 'http://127.0.0.1:8000/api/oauth/callback/youtube/'),
-    ('linkedin', 'linkedin_client_id_84920', 'linkedin_client_secret_20194', 'http://127.0.0.1:8000/api/oauth/callback/linkedin/'),
-    ('twitter', 'twitter_client_id_48201', 'twitter_client_secret_94021', 'http://127.0.0.1:8000/api/oauth/callback/twitter/'),
-    ('tiktok', 'tiktok_client_key_84920', 'tiktok_client_secret_2019', 'http://127.0.0.1:8000/api/oauth/callback/tiktok/'),
-    ('pinterest', 'pinterest_app_id_48201', 'pinterest_app_secret_9401', 'http://127.0.0.1:8000/api/oauth/callback/pinterest/'),
+    ('instagram', '1767475414295181', '7e166a19b2c14e76fc672b79a0c23b51', 'https://andhrayatri.in/api/oauth/callback/instagram/'),
+    ('facebook', '1767475414295181', '7e166a19b2c14e76fc672b79a0c23b51', 'https://andhrayatri.in/api/oauth/callback/facebook/'),
+    ('youtube', 'google_client_id_48201.apps.googleusercontent.com', 'google_client_secret_94820', 'https://andhrayatri.in/api/oauth/callback/youtube/'),
+    ('linkedin', 'linkedin_client_id_84920', 'linkedin_client_secret_20194', 'https://andhrayatri.in/api/oauth/callback/linkedin/'),
+    ('twitter', 'twitter_client_id_48201', 'twitter_client_secret_94021', 'https://andhrayatri.in/api/oauth/callback/twitter/'),
+    ('tiktok', 'tiktok_client_key_84920', 'tiktok_client_secret_2019', 'https://andhrayatri.in/api/oauth/callback/tiktok/'),
+    ('pinterest', 'pinterest_app_id_48201', 'pinterest_app_secret_9401', 'https://andhrayatri.in/api/oauth/callback/pinterest/'),
 ]
+
 
 for p, cid, csecret, ruri in platforms:
     OAuthCredential.objects.update_or_create(
