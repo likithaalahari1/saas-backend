@@ -1,6 +1,10 @@
-import sys, os
+    import sys, os
 
-# Add application directory to path
-sys.path.append(os.getcwd())
+    # Add application directory to Python path for cPanel Phusion Passenger
+    sys.path.insert(0, os.path.dirname(__file__))
 
-from socially_backend.wsgi import application
+    # Set Django settings module
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'socially_backend.settings')
+
+    from django.core.wsgi import get_wsgi_application
+    application = get_wsgi_application()
