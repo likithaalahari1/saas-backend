@@ -5,7 +5,8 @@ from .views import (
     SocialAccountViewSet, 
     PostViewSet, 
     MediaAssetViewSet,
-    get_oauth_authorize_url
+    get_oauth_authorize_url,
+    health_check
 )
 
 router = DefaultRouter()
@@ -15,6 +16,7 @@ router.register(r'posts', PostViewSet, basename='post')
 router.register(r'media', MediaAssetViewSet, basename='media')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('health/', health_check, name='health-check'),
     path('oauth/authorize/<str:platform>/', get_oauth_authorize_url, name='oauth-authorize-url'),
+    path('', include(router.urls)),
 ]

@@ -1,6 +1,7 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
+from django.db import connection
 from .models import OAuthCredential, SocialAccount, Post, PostVariant, MediaAsset
 from .serializers import (
     OAuthCredentialSerializer, 
@@ -9,6 +10,27 @@ from .serializers import (
     MediaAssetSerializer
 )
 from .oauth_service import get_platform_authorize_url, publish_content_to_network
+
+@api_view(['GET'])
+def health_check(request):
+    """Health check endpoint for production load balancers and monitoring tools."""
+    db_ok = True
+    db_error = None
+    try:
+        connection.ensure_connection()
+    except Exception as e:
+        db_ok = False
+        db_error = str(e)
+
+    return Response({
+        'status': 'healthy' if db_ok else 'degraded',
+        'database': 'connected' if db_ok else 'error',
+        'database_error': db_error,
+        'service': 'Socially Django REST Backend API',
+        'version': '1.0.0',
+        'timestamp': request.META.get('REQUEST_TIME', '')
+    }, status=status.HTTP_200_OK if db_ok else status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class OAuthCredentialViewSet(viewsets.ModelViewSet):
     """API endpoint to manage Developer OAuth Keys (Meta, Google, Twitter, LinkedIn, TikTok, Pinterest)."""
@@ -23,7 +45,7 @@ class OAuthCredentialViewSet(viewsets.ModelViewSet):
             defaults={
                 'client_id': request.data.get('client_id', ''),
                 'client_secret': request.data.get('client_secret', ''),
-                'redirect_uri': request.data.get('redirect_uri', 'http://127.0.0.1:8000/api/oauth/callback/'),
+                'redirect_uri': request.data.get('redirect_uri', 'https://andhrayatri.in/api/oauth/callback/'),
                 'developer_key': request.data.get('developer_key', ''),
                 'is_active': True
             }
@@ -92,7 +114,6 @@ class PostViewSet(viewsets.ModelViewSet):
             variant = post.variants.filter(platform=p).first()
             caption = variant.caption if variant and variant.caption else post.global_caption
             
-            # Find account token if exists
             acc = SocialAccount.objects.filter(platform=p, is_connected=True).first()
             token = acc.access_token if acc else ''
 
@@ -120,7 +141,7 @@ def get_oauth_authorize_url(request, platform):
     """Returns official authorization redirect URL for Meta, Google, Twitter, LinkedIn, TikTok, Pinterest."""
     cred = OAuthCredential.objects.filter(platform=platform).first()
     client_id = cred.client_id if cred else f"mock_{platform}_client_id"
-    redirect_uri = cred.redirect_uri if cred else "http://127.0.0.1:8000/api/oauth/callback/"
+    redirect_uri = cred.redirect_uri if cred else f"https://andhrayatri.in/api/oauth/callback/{platform}/"
 
     auth_url = get_platform_authorize_url(platform, client_id, redirect_uri)
     return Response({
