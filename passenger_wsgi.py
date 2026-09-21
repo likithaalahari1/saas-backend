@@ -1,10 +1,13 @@
-    import sys, os
+import sys, os
 
-    # Add application directory to Python path for cPanel Phusion Passenger
-    sys.path.insert(0, os.path.dirname(__file__))
+# Virtual environment Python executable for cPanel Phusion Passenger
+INTERP = "/home/xpsvyema/virtualenv/andhrayatri.in/3.10/bin/python"
+if sys.executable != INTERP:
+    os.execl(INTERP, INTERP, *sys.argv)
 
-    # Set Django settings module
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'socially_backend.settings')
+sys.path.insert(0, os.path.dirname(__file__))
 
-    from django.core.wsgi import get_wsgi_application
-    application = get_wsgi_application()
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'socially_backend.settings')
+
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
